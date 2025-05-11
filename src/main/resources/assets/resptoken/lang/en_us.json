@@ -1,0 +1,14 @@
+{
+  "item.resptoken.respawn_token": "Respawn Token",
+  "item.resptoken.token_part": "Token Part",
+  "item.resptoken.binding_glue": "Binding Glue",
+
+  "block.resptoken.death_chest": "Death Chest",
+  "container.resptoken.death_chest": "Death Chest",
+
+  "tooltip.resptoken.respawn_token": "Teleports a player back to where they died upon respawn. While also granting them invincibility for a short period of time.",
+  "tooltip.resptoken.token_part": "Used in crafting a brand new Respawn Token.",
+  "tooltip.resptoken.binding_glue": "Used in crafting a brand new Respawn Token.",
+
+  "creativetab.resptoken_tab": "Respawn Token"
+}
