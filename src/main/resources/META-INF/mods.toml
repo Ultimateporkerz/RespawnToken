@@ -4,7 +4,7 @@ license= "mit"
 
 [[mods]]
 modId= "resptoken"
-mod_version= "1.0.0"
+mod_version= "1.0.1"
 authors= "UltimatePorkerz"
 description= '''Makes dying less stressful'''
 
