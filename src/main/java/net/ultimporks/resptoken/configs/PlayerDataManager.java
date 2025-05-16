@@ -20,10 +20,10 @@ public class PlayerDataManager {
 
     private static File getDataFile(MinecraftServer server) {
         if (server.isSingleplayer()) {
-            return new File(server.getServerDirectory(), "saves/" + server.getWorldData().getLevelName() + "/serverconfig/resptoken_playerdata.json");
+            return new File(server.getServerDirectory().toFile(), "saves/" + server.getWorldData().getLevelName() + "/serverconfig/resptoken_playerdata.json");
         } else {
             if (!server.isSingleplayer()) {
-                return new File(server.getServerDirectory(), "" + server.getWorldData().getLevelName() + "/serverconfig/resptoken_playerdata.json");
+                return new File(server.getServerDirectory().toFile(), "" + server.getWorldData().getLevelName() + "/serverconfig/resptoken_playerdata.json");
             }
         }
         return null;

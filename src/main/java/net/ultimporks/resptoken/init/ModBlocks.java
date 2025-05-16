@@ -22,7 +22,8 @@ public class ModBlocks {
             () -> new DeathChestBlock(BlockBehaviour.Properties.of()
                     .strength(2.0F, 50.5F)  // Set block hardness and resistance
                     .destroyTime(1.0F)  // Set block destruction time
-                    .sound(SoundType.WOOD)));  // Set block sound type
+                    .sound(SoundType.WOOD),
+                    ModBlockEntities.DEATH_CHEST_BE::get));  // Set block sound type
 
 
 

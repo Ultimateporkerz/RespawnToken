@@ -1,10 +1,13 @@
 package net.ultimporks.resptoken.block.blockentity;
 
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.CompoundContainer;
@@ -19,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.ultimporks.resptoken.init.ModBlockEntities;
+
+import javax.annotation.Nullable;
 
 @SuppressWarnings("NullableProblems")
 public class DeathChestBlockEntity extends BaseContainerBlockEntity implements LidBlockEntity {
@@ -56,6 +61,21 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
         this.chestLidController = new ChestLidController();
     }
 
+
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return items;
+    }
+
+    @Override
+    public void setItems(NonNullList<ItemStack> items) {
+        this.items = items;
+    }
+
+    public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, DeathChestBlockEntity blockEntity) {
+        blockEntity.chestLidController.tickLid();
+    }
+
     @Override
     public void startOpen(Player pPlayer) {
         if (!this.remove && !pPlayer.isSpectator()) {
@@ -68,16 +88,10 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
             this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
-
     @Override
     public float getOpenNess(float partialTicks) {
         return this.chestLidController.getOpenness(partialTicks);
     }
-
-    public static void lidAnimateTick(Level level, BlockPos pos, BlockState state, DeathChestBlockEntity blockEntity) {
-        blockEntity.chestLidController.tickLid();
-    }
-
     @Override
     public boolean triggerEvent(int id, int type) {
         if (id == 1) {
@@ -86,7 +100,6 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
         }
         return super.triggerEvent(id, type);
     }
-
     @Override
     protected Component getDefaultName() {
         return Component.translatable("container.resptoken.death_chest");
@@ -95,17 +108,19 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
     protected AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory) {
         return ChestMenu.sixRows(pContainerId, pInventory, this);
     }
+
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
+    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.loadAdditional(pTag, pRegistries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(pTag, this.items);
+        ContainerHelper.loadAllItems(pTag, this.items, pRegistries);
     }
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
-        ContainerHelper.saveAllItems(pTag, this.items);
+    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.saveAdditional(pTag, pRegistries);
+        ContainerHelper.saveAllItems(pTag, this.items, pRegistries);
     }
+
     @Override
     public int getContainerSize() {
         return 54;
@@ -131,14 +146,6 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
         return ContainerHelper.takeItem(this.items, slot);
     }
     @Override
-    public void setItem(int slot, ItemStack stack) {
-        this.items.set(slot, stack);
-        if (stack.getCount() > this.getMaxStackSize()) {
-            stack.setCount(this.getMaxStackSize());
-        }
-        this.setChanged();
-    }
-    @Override
     public boolean stillValid(Player player) {
         return this.level != null
                 && this.level.getBlockEntity(this.worldPosition) == this
@@ -154,4 +161,13 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
         this.setChanged();
     }
 
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+        return saveWithoutMetadata(pRegistries);
+    }
 }

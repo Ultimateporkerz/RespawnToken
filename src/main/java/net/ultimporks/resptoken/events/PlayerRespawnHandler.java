@@ -13,7 +13,6 @@ import net.ultimporks.resptoken.item.RespawnTokenItem;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
-import java.security.interfaces.RSAKey;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,7 +29,6 @@ public class PlayerRespawnHandler {
                 RespawnToken.LOGGING("Respawn Token detected in inventory.");
                 hasRespawnToken.set(true);
 
-                stack.getOrCreateTag().putUUID("playerUUID", player.getUUID());
                 RespawnTokenItem.damageRespawnToken(stack, player);
                 break;
             }
@@ -49,7 +47,6 @@ public class PlayerRespawnHandler {
                                 RespawnToken.LOGGING("Respawn Token detected in bauble slot.");
                                 hasRespawnToken.set(true);
 
-                                stack.getOrCreateTag().putUUID("playerUUID", player.getUUID());
                                 RespawnTokenItem.damageRespawnToken(stack, player); // Damage the token
                                 break;
                             }

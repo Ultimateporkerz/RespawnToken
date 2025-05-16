@@ -24,7 +24,7 @@ public class ModItems {
             () -> new TokenPartItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
 
     public static final RegistryObject<Item> BINDING_GLUE = ITEMS.register("binding_glue",
-            () -> new BindingGlueItem(new Item.Properties().stacksTo(1).setNoRepair()));
+            () -> new BindingGlueItem(new Item.Properties().stacksTo(1)));
 
     public static void registerItems(IEventBus eventBus) {
         ITEMS.register(eventBus);

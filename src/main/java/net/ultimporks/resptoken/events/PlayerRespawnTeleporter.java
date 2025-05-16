@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.ITeleporter;
 import net.ultimporks.resptoken.RespawnToken;
 import net.ultimporks.resptoken.configs.ModConfigs;
 import net.ultimporks.resptoken.data.PlayerInfo;
@@ -19,7 +18,7 @@ import net.ultimporks.resptoken.network.S2CMessageInvulnerableOverlay;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerRespawnTeleporter implements ITeleporter {
+public class PlayerRespawnTeleporter {
     public static final Map<UUID, Boolean> shouldTeleportOnRespawn = new ConcurrentHashMap<>();
     public static final Map<UUID, Boolean> shouldExtendInvulnerabilityTimer = new ConcurrentHashMap<>();
     public static final Map<UUID, Boolean> shouldTeleportToSafePosition = new ConcurrentHashMap<>();
@@ -79,8 +78,7 @@ public class PlayerRespawnTeleporter implements ITeleporter {
 
             if (!currentLevel.isClientSide) {
                 // Send network packet for invulnerability effect
-                ModMessages.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player,
-                        new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticksTotal));
+                ModMessages.sendToPlayer(new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticksTotal), ((ServerPlayer) player));
             }
         } else {
             // Run default if Lava death doesn't extend invulnerability
@@ -90,8 +88,8 @@ public class PlayerRespawnTeleporter implements ITeleporter {
 
             if (!currentLevel.isClientSide) {
                 // Send network packet for invulnerability effect
-                ModMessages.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player,
-                        new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticks));
+
+                ModMessages.sendToPlayer(new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticks), (ServerPlayer) player);
             }
         }
 

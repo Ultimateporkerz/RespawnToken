@@ -36,7 +36,7 @@ public class RespawnToken {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        ModMessages.init();
+        ModMessages.register();
     }
 
     private void registerConfigs() {

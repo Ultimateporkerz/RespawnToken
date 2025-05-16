@@ -41,6 +41,7 @@ public class RespawnTokenItem extends Item {
         }
     }
 
+
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.MENDING;

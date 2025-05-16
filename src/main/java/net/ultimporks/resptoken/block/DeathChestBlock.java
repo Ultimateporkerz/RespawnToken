@@ -1,12 +1,9 @@
 package net.ultimporks.resptoken.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -18,27 +15,32 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import net.ultimporks.resptoken.block.blockentity.DeathChestBlockEntity;
 import net.ultimporks.resptoken.init.ModBlockEntities;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
-public class DeathChestBlock extends AbstractChestBlock<DeathChestBlockEntity> {
+public class DeathChestBlock extends AbstractChestBlock<DeathChestBlockEntity> implements SimpleWaterloggedBlock {
+    public static final MapCodec<DeathChestBlock> CODEC1 = simpleCodec(props -> new DeathChestBlock(props, ModBlockEntities.DEATH_CHEST_BE::get));
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
     protected static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
 
-    public DeathChestBlock(Properties pProperties) {
-        super(pProperties, ModBlockEntities.DEATH_CHEST_BE::get);
+    @Override
+    public MapCodec<? extends DeathChestBlock> codec() {
+        return CODEC1;
+    }
+
+    public DeathChestBlock(Properties properties, Supplier<BlockEntityType<? extends DeathChestBlockEntity>> blockEntityType) {
+        super(properties, blockEntityType);
         this.registerDefaultState(this.stateDefinition.any()
-                .setValue(FACING, Direction.NORTH));
+                .setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
     }
 
     public BlockEntityType<? extends DeathChestBlockEntity> blockEntityType() {
@@ -64,11 +66,13 @@ public class DeathChestBlock extends AbstractChestBlock<DeathChestBlockEntity> {
         return Objects.requireNonNull(super.getStateForPlacement(context))
                 .setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
-    @Override
+
+    /* @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if (entity instanceof DeathChestBlockEntity) {
+
                 NetworkHooks.openScreen(((ServerPlayer) pPlayer), (DeathChestBlockEntity)entity, pPos);
             } else {
                 throw new IllegalStateException("Container Provider is missing!");
@@ -76,6 +80,8 @@ public class DeathChestBlock extends AbstractChestBlock<DeathChestBlockEntity> {
         }
         return InteractionResult.sidedSuccess(pLevel.isClientSide);
     }
+    */
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new DeathChestBlockEntity(pPos, pState);
@@ -86,7 +92,7 @@ public class DeathChestBlock extends AbstractChestBlock<DeathChestBlockEntity> {
     }
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING);
+        pBuilder.add(FACING, WATERLOGGED);
     }
     @Override
     public DoubleBlockCombiner.NeighborCombineResult<? extends ChestBlockEntity> combine(BlockState state, Level level, BlockPos pos, boolean override) {

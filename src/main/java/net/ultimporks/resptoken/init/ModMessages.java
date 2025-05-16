@@ -1,33 +1,50 @@
 package net.ultimporks.resptoken.init;
 
-import com.mrcrayfish.framework.api.FrameworkAPI;
-import com.mrcrayfish.framework.api.network.FrameworkNetwork;
-import com.mrcrayfish.framework.api.network.MessageDirection;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.SimpleChannel;
 import net.ultimporks.resptoken.Reference;
-import net.ultimporks.resptoken.RespawnToken;
 import net.ultimporks.resptoken.network.S2CMessageInvulnerableOverlay;
 import net.ultimporks.resptoken.network.S2CMessageRespawnTeleport;
 
 public class ModMessages {
-    private static FrameworkNetwork playChannel;
+    private static final String PROTOCOL_VERSION = "1";
+    public static final SimpleChannel INSTANCE = ChannelBuilder.named(
+            ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "resptoken"))
+            .serverAcceptedVersions((status, version) -> true)
+            .clientAcceptedVersions((status, version) -> true)
+            .networkProtocolVersion(1)
+            .simpleChannel();
 
-    public static void init() {
-        RespawnToken.LOGGING("(ModMessages) - Registering Network!");
-        playChannel = FrameworkAPI.createNetworkBuilder(new ResourceLocation(
-                Reference.NETWORK_ID), 1)
+    public static void register() {
 
-                // PLAY TO CLIENT
-                .registerPlayMessage(S2CMessageInvulnerableOverlay.class, MessageDirection.PLAY_CLIENT_BOUND)
-                .registerPlayMessage(S2CMessageRespawnTeleport.class, MessageDirection.PLAY_CLIENT_BOUND)
+        INSTANCE.messageBuilder(S2CMessageInvulnerableOverlay.class, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(S2CMessageInvulnerableOverlay::encode)
+                .decoder(S2CMessageInvulnerableOverlay::new)
+                .consumerMainThread(S2CMessageInvulnerableOverlay::handle)
+                .add();
 
+        INSTANCE.messageBuilder(S2CMessageRespawnTeleport.class, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(S2CMessageRespawnTeleport::encode)
+                .decoder(S2CMessageRespawnTeleport::new)
+                .consumerMainThread(S2CMessageRespawnTeleport::handle)
+                .add();
 
-                .build();
-
-        RespawnToken.LOGGING("(ModMessages) - Network registered successfully!");
     }
 
-    public static FrameworkNetwork getPlayChannel() {
-        return playChannel;
+    public static void sendToServer(Object msg) {
+        INSTANCE.send(msg, PacketDistributor.SERVER.noArg());
     }
+
+    public static void sendToPlayer(Object msg, ServerPlayer player) {
+        INSTANCE.send(msg, PacketDistributor.PLAYER.with(player));
+    }
+
+    public static void sendToAllPlayer(Object msg) {
+        INSTANCE.send(msg, PacketDistributor.ALL.noArg());
+    }
+
 }
