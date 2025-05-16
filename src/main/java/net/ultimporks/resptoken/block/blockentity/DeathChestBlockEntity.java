@@ -26,7 +26,7 @@ import net.ultimporks.resptoken.init.ModBlockEntities;
 import javax.annotation.Nullable;
 
 @SuppressWarnings("NullableProblems")
-public class DeathChestBlockEntity extends BaseContainerBlockEntity implements LidBlockEntity {
+public class DeathChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(54, ItemStack.EMPTY);
     public final ChestLidController chestLidController;
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
@@ -60,7 +60,6 @@ public class DeathChestBlockEntity extends BaseContainerBlockEntity implements L
         super(ModBlockEntities.DEATH_CHEST_BE.get(), pos, state);
         this.chestLidController = new ChestLidController();
     }
-
 
     @Override
     public NonNullList<ItemStack> getItems() {

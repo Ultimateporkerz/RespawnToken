@@ -26,12 +26,6 @@ public class ModConfigs {
         public final ForgeConfigSpec.IntValue lavaDeathExtensionAmount;
         public final ForgeConfigSpec.BooleanValue enableDeathChest;
 
-        // Token Settings
-        public final ForgeConfigSpec.IntValue tokenDurability;
-
-        // Binding Glue Settings
-        public final ForgeConfigSpec.IntValue glueDurability;
-
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("General Settings").push("general");
             enableDebugging = builder
@@ -65,18 +59,6 @@ public class ModConfigs {
             enableDeathChest = builder
                     .comment("Should death chests be enabled? This will save the players inventory in a chest upon death. (default true)")
                     .define("enableDeathChest", true);
-
-            // Token Settings
-            tokenDurability = builder
-                    .comment("Maximum durability for the respawn token. (-1 for infinite - Default 8)")
-                    .defineInRange("tokenDurability", 8, -1, Integer.MAX_VALUE);
-
-            // Binding Glue Settings
-            glueDurability = builder
-                    .comment("Maximum durability for the Binding Glue. (-1 for infinite -  Default 8)")
-                    .defineInRange("glueDurability", 8, -1, Integer.MAX_VALUE);
-
-
 
             builder.pop();
         }

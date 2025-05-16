@@ -10,27 +10,32 @@ import net.ultimporks.resptoken.data.PlayerInfo;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.item.RespawnTokenItem;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerRespawnHandler {
 
+    public static final HashMap<UUID, List<ItemStack>> tokenStorage = new HashMap<>();
+
     public static void checkInventory(Player player, boolean isInLava, boolean isInVoid) {
         // Assuming PlayerInfoManager should be shared, consider making it a singleton or a dependency.
         AtomicBoolean hasRespawnToken = new AtomicBoolean(false);
+        UUID playerUUID = player.getUUID();
+        List<ItemStack> tokens = new ArrayList<>();
 
-        // Check the player's main inventory for the respawn token
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem() instanceof RespawnTokenItem) {
-                RespawnToken.LOGGING("Respawn Token detected in inventory.");
+            if (!stack.isEmpty() && stack.getItem() instanceof RespawnTokenItem) {
+                RespawnToken.LOGGING("Respawn Token detected in inventory!");
                 hasRespawnToken.set(true);
-
-               // RespawnTokenItem.damageRespawnToken(stack, player);
-                break;
+                tokens.add(stack.copy());
             }
         }
 
-        UUID playerUUID = player.getUUID();
+        // Save the token(s) if any were found
+        if (!tokens.isEmpty()) {
+            tokenStorage.put(playerUUID, tokens);
+        }
+
         // Handle the case where no token is found
         if (!hasRespawnToken.get()) {
             PlayerRespawnTeleporter.shouldTeleportOnRespawn.put(playerUUID, false);

@@ -19,7 +19,7 @@ public class TeleportOverlay {
     private static final Minecraft CLIENT = Minecraft.getInstance();
 
     @SubscribeEvent
-    public static void onRenderOverlay(ScreenEvent.Render.Post event) {
+    public static void onRenderOverlay(ScreenEvent.Render.Pre event) {
         Player player = CLIENT.player;
 
         if (player != null) {

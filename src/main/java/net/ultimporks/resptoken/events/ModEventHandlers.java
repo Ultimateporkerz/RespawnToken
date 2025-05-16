@@ -87,24 +87,17 @@ public class ModEventHandlers {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
-        ServerLevel currentLevel = (ServerLevel) player.level();
-        long currentTime = currentLevel.getGameTime();
-        if (PlayerInfoManager.hasDeathInfo(player.getUUID())) {
-            boolean didDie = PlayerInfoManager.didPlayerDie(player.getUUID());
-            if (didDie) {
-                if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(player.getUUID())) {
-                    UUID playerUUID = player.getUUID();
-                    if (PlayerInfoManager.hasPlayerInfo(playerUUID)) {
+        UUID playerUUID = player.getUUID();
+        if (PlayerInfoManager.hasDeathInfo(playerUUID)) {
+            if (PlayerInfoManager.didPlayerDie(playerUUID)) {
+                if (PlayerRespawnHandler.tokenStorage.containsKey(playerUUID)) {
+                    List<ItemStack> tokens = PlayerRespawnHandler.tokenStorage.remove(playerUUID);
 
-                        // Start teleport Timer
-                        int seconds = PlayerRespawnTeleporter.TELEPORT_TIMER;
-                        int ticks = seconds * 20;
-                        PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime + ticks);
-
-                        ModMessages.sendToPlayer(new S2CMessageRespawnTeleport(playerUUID, currentTime + ticks), ((ServerPlayer) player));
+                    for (ItemStack token : tokens) {
+                        player.getInventory().add(token);
                     }
-                    PlayerInfoManager.removeDidPlayerDie(playerUUID);
                 }
+                PlayerInfoManager.removeDidPlayerDie(playerUUID);
             }
         }
     }
@@ -134,6 +127,7 @@ public class ModEventHandlers {
                     // Timer expired
                     PlayerRespawnTeleporter.teleportPlayer(player);
                     PlayerRespawnTeleporter.waitingToTeleport.remove(playerId);
+                    PlayerRespawnTeleporter.shouldTeleportOnRespawn.remove(playerId);
                 }
             }
         }
