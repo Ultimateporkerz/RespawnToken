@@ -25,14 +25,13 @@ public class RespawnTokenItem extends Item {
     private static final int MAX_DAMAGE = 8;
 
 
-
     @Override
-    public void appendHoverText(@Nonnull ItemStack pStack, @Nullable Level pLevel, @Nonnull List<Component> pTooltipcomponents, @Nonnull TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipcomponents, TooltipFlag pTooltipFlag) {
         pTooltipcomponents.add(Component.translatable("tooltip.resptoken.respawn_token").withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-        super.appendHoverText(pStack, pLevel, pTooltipcomponents, pIsAdvanced);
+        super.appendHoverText(pStack, pContext, pTooltipcomponents, pTooltipFlag);
     }
 
-    public static void damageRespawnToken(ItemStack itemStack, LivingEntity livingEntity) {
+   /* public static void damageRespawnToken(ItemStack itemStack, LivingEntity livingEntity) {
         if (livingEntity instanceof Player player) {
             itemStack.hurtAndBreak(1, player, (p_289501_) -> {
                 p_289501_.broadcastBreakEvent(player.getUsedItemHand());
@@ -40,12 +39,7 @@ public class RespawnTokenItem extends Item {
             });
         }
     }
-
-
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.UNBREAKING || enchantment == Enchantments.MENDING;
-    }
+    */
 
     @Override
     public int getBarWidth(ItemStack stack) {
@@ -55,24 +49,6 @@ public class RespawnTokenItem extends Item {
     @Override
     public int getBarColor(ItemStack pStack) {
         return 0xFFD700;
-    }
-
-    @Override
-    public boolean canBeDepleted() {
-        return true;
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        if (ModConfigs.COMMON.tokenDurability.get() != -1) {
-            return ModConfigs.COMMON.tokenDurability.get();
-        }
-        return MAX_DAMAGE;
-    }
-
-    @Override
-    public boolean isDamageable(ItemStack stack) {
-        return ModConfigs.COMMON.tokenDurability.get() != -1;
     }
 
     @Override
