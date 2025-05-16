@@ -4,9 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.ultimporks.resptoken.configs.ModConfigs;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -17,14 +15,14 @@ public class BindingGlueItem extends Item {
         super(pProperties);
     }
 
-    @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("tooltip.resptoken.binding_glue"));
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-    }
 
     @Override
-    public int getMaxDamage(ItemStack stack) {
+    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
+        pTooltipComponents.add(Component.translatable("tooltip.resptoken.binding_glue"));
+        super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
+    }
+
+    public static int getMaxDamage() {
         if (ModConfigs.COMMON.glueDurability.get() != -1) {
             return ModConfigs.COMMON.glueDurability.get();
         }
@@ -32,13 +30,8 @@ public class BindingGlueItem extends Item {
     }
 
     @Override
-    public boolean isDamageable(ItemStack stack) {
-        return ModConfigs.COMMON.glueDurability.get() != -1;
-    }
-
-    @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        if (!isDamageable(itemStack)) {
+        if (ModConfigs.COMMON.glueDurability.get() == -1) {
             return itemStack.copy();
         } else {
             ItemStack damagedItem = itemStack.copy();

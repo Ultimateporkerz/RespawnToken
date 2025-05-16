@@ -9,9 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ChestBlock;
 import net.ultimporks.resptoken.block.blockentity.DeathChestBlockEntity;
-import net.ultimporks.resptoken.compat.CompatCheck;
 import net.ultimporks.resptoken.init.ModBlocks;
-import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,23 +50,6 @@ public class DeathChestHandler {
             transferInventoryItems(player.getInventory().items, chestEntity, chestSlots, slotIndex, level, chestPos);
             transferInventoryItems(player.getInventory().armor, chestEntity, chestSlots, slotIndex, level, chestPos);
             transferInventoryItems(player.getInventory().offhand, chestEntity, chestSlots, slotIndex, level, chestPos);
-
-            // Transfer Curios items
-            if (CompatCheck.IS_CURIOS_INSTALLED) {
-                CuriosApi.getCuriosInventory(player).ifPresent(curiosInventory -> {
-                    for (String identifier : curiosInventory.getCurios().keySet()) {
-                        curiosInventory.getStacksHandler(identifier).ifPresent(handler -> {
-                            for (int i = 0; i < handler.getSlots(); i++) {
-                                ItemStack stack = handler.getStacks().getStackInSlot(i);
-                                if (!stack.isEmpty()) {
-                                    slotIndex.set(distributeItem(stack, chestEntity, chestSlots, slotIndex.get(), level, chestPos));
-                                    handler.getStacks().setStackInSlot(i, ItemStack.EMPTY);
-                                }
-                            }
-                        });
-                    }
-                });
-            }
 
             // Clear the player's inventory
             player.getInventory().clearContent();
