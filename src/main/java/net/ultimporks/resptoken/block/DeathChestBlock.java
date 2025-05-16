@@ -17,18 +17,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.ultimporks.resptoken.block.blockentity.DeathChestBlockEntity;
 import net.ultimporks.resptoken.init.ModBlockEntities;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
 
 public class DeathChestBlock extends AbstractChestBlock<DeathChestBlockEntity> {
