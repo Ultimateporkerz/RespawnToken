@@ -15,5 +15,6 @@ public class DataGenerators {
         PackOutput packOutput = generator.getPackOutput();
 
         generator.addProvider(event.includeServer(), new ModGlobalLootModifiersGenerator(packOutput));
+        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
     }
 }

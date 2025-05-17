@@ -79,8 +79,7 @@ public class PlayerRespawnTeleporter implements ITeleporter {
 
             if (!currentLevel.isClientSide) {
                 // Send network packet for invulnerability effect
-                ModMessages.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player,
-                        new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticksTotal));
+                ModMessages.sendToPlayer(new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticksTotal), ((ServerPlayer) player));
             }
         } else {
             // Run default if Lava death doesn't extend invulnerability
@@ -90,8 +89,7 @@ public class PlayerRespawnTeleporter implements ITeleporter {
 
             if (!currentLevel.isClientSide) {
                 // Send network packet for invulnerability effect
-                ModMessages.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player,
-                        new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticks));
+                ModMessages.sendToPlayer(new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticks), (ServerPlayer) player);
             }
         }
 

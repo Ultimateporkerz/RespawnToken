@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.ultimporks.resptoken.block.blockentity.DeathChestBlockEntity;
 import net.ultimporks.resptoken.compat.CompatCheck;
 import net.ultimporks.resptoken.init.ModBlocks;
+import net.ultimporks.resptoken.item.RespawnTokenItem;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
@@ -28,13 +29,8 @@ public class DeathChestHandler {
      * @param deathPos The position to place the chest.
      */
     public static void placeDeathChest(Player player, ServerLevel level, BlockPos deathPos) {
-        // Define Chest positions
-        BlockPos chestPos1 = deathPos;
-
-        // Place first chest
-        level.setBlock(chestPos1, ModBlocks.DEATH_CHEST.get().defaultBlockState().setValue(ChestBlock.FACING, Direction.NORTH), 3);
-
-        fillChestWithInventory(player, level, chestPos1);
+        level.setBlock(deathPos, ModBlocks.DEATH_CHEST.get().defaultBlockState().setValue(ChestBlock.FACING, Direction.NORTH), 3);
+        fillChestWithInventory(player, level, deathPos);
     }
 
     /**
@@ -81,7 +77,7 @@ public class DeathChestHandler {
     // Helper method to transfer items from an inventory list
     private static void transferInventoryItems(NonNullList<ItemStack> inventory, DeathChestBlockEntity chestEntity, int chestSlots, AtomicInteger slotIndex, ServerLevel level, BlockPos chestPos1) {
         for (ItemStack stack : inventory) {
-            if (!stack.isEmpty()) {
+            if (!stack.isEmpty() && !(stack.getItem() instanceof RespawnTokenItem)) {
                 slotIndex.set(distributeItem(stack, chestEntity, chestSlots, slotIndex.get(), level, chestPos1));
                 stack.setCount(0); // Clear the stack after transferring
             }

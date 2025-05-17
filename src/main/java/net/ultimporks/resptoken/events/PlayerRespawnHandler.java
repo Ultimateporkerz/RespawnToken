@@ -13,26 +13,27 @@ import net.ultimporks.resptoken.item.RespawnTokenItem;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
-import java.security.interfaces.RSAKey;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerRespawnHandler {
 
+    public static final HashMap<UUID, List<ItemStack>> tokenStorage = new HashMap<>();
+
     public static void checkInventory(Player player, boolean isInLava, boolean isInVoid) {
-        // Assuming PlayerInfoManager should be shared, consider making it a singleton or a dependency.
         AtomicBoolean hasRespawnToken = new AtomicBoolean(false);
+        UUID playerUUID = player.getUUID();
+        List<ItemStack> tokens = new ArrayList<>();
 
-        // Check the player's main inventory for the respawn token
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem() instanceof RespawnTokenItem respawnTokenItem) {
+            if (stack.getItem() instanceof RespawnTokenItem) {
                 RespawnToken.LOGGING("Respawn Token detected in inventory.");
+                stack.getOrCreateTag().putInt("xPos", player.getOnPos().getX());
+                stack.getOrCreateTag().putInt("yPos", player.getOnPos().getY());
+                stack.getOrCreateTag().putInt("zPos", player.getOnPos().getZ());
+                stack.getOrCreateTag().putBoolean("has_died", true);
                 hasRespawnToken.set(true);
-
-                stack.getOrCreateTag().putUUID("playerUUID", player.getUUID());
-                RespawnTokenItem.damageRespawnToken(stack, player);
-                break;
+                tokens.add(stack.copy());
             }
         }
 
@@ -47,11 +48,12 @@ public class PlayerRespawnHandler {
                             ItemStack stack = handler.getStacks().getStackInSlot(i);
                             if (stack.getItem() instanceof RespawnTokenItem) {
                                 RespawnToken.LOGGING("Respawn Token detected in bauble slot.");
+                                stack.getOrCreateTag().putInt("xPos", player.getOnPos().getX());
+                                stack.getOrCreateTag().putInt("yPos", player.getOnPos().getY());
+                                stack.getOrCreateTag().putInt("zPos", player.getOnPos().getZ());
+                                stack.getOrCreateTag().putBoolean("has_died", true);
                                 hasRespawnToken.set(true);
-
-                                stack.getOrCreateTag().putUUID("playerUUID", player.getUUID());
-                                RespawnTokenItem.damageRespawnToken(stack, player); // Damage the token
-                                break;
+                                tokens.add(stack.copy());
                             }
                         }
                     });
@@ -59,7 +61,11 @@ public class PlayerRespawnHandler {
             }
         }
 
-        UUID playerUUID = player.getUUID();
+        // Save the token(s) if any were found
+        if (!tokens.isEmpty()) {
+            tokenStorage.put(playerUUID, tokens);
+        }
+
         // Handle the case where no token is found
         if (!hasRespawnToken.get()) {
             PlayerRespawnTeleporter.shouldTeleportOnRespawn.put(playerUUID, false);

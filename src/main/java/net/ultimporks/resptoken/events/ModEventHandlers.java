@@ -3,10 +3,6 @@ package net.ultimporks.resptoken.events;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
@@ -14,26 +10,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.ultimporks.resptoken.configs.ModConfigs;
 import net.ultimporks.resptoken.Reference;
 import net.ultimporks.resptoken.RespawnToken;
-import net.ultimporks.resptoken.commands.LastDeathCommand;
-import net.ultimporks.resptoken.configs.PlayerDataManager;
+import net.ultimporks.resptoken.data.PlayerDataSavedData;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.init.ModItems;
-import net.ultimporks.resptoken.init.ModMessages;
-import net.ultimporks.resptoken.network.S2CMessageRespawnTeleport;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -57,12 +46,12 @@ public class ModEventHandlers {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.getEntity().level().isClientSide) {
             ServerPlayer player = (ServerPlayer) event.getEntity();
-            String playerName = player.getDisplayName().getString();
+            UUID playerUUID = player.getUUID();
+            PlayerDataSavedData data = PlayerDataSavedData.get(player.getServer());
 
-            if (ModConfigs.COMMON.firstTimePlayers.get() && !PlayerDataManager.isPlayerKnown(playerName)) {
-                RespawnToken.LOGGING("(ModEventHandlers) - New Player Detected!");
-                PlayerDataManager.addPlayer(playerName);
-                PlayerDataManager.savePlayerData(player.getServer());
+            if (ModConfigs.COMMON.firstTimePlayers.get() && !data.isPlayerKnown(playerUUID)) {
+                RespawnToken.LOGGING("(ModEventHandlers) - New Player Detected! " + data.getKnownPlayers());
+                data.addPlayer(playerUUID);
                 ItemStack respawnToken = new ItemStack(ModItems.RESPAWN_TOKEN.get());
                 player.getInventory().add(respawnToken);
             }
@@ -86,25 +75,13 @@ public class ModEventHandlers {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
-        ServerLevel currentLevel = (ServerLevel) player.level();
-        long currentTime = currentLevel.getGameTime();
-        if (PlayerInfoManager.hasDeathInfo(player.getUUID())) {
-            boolean didDie = PlayerInfoManager.didPlayerDie(player.getUUID());
-            if (didDie) {
-                if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(player.getUUID())) {
-                    UUID playerUUID = player.getUUID();
-                    if (PlayerInfoManager.hasPlayerInfo(playerUUID)) {
+        UUID playerUUID = player.getUUID();
+        if (PlayerInfoManager.hasDeathInfo(playerUUID) && PlayerInfoManager.didPlayerDie(playerUUID)) {
+            if (PlayerRespawnHandler.tokenStorage.containsKey(playerUUID)) {
+                List<ItemStack> tokens = PlayerRespawnHandler.tokenStorage.remove(playerUUID);
 
-                        // Start teleport Timer
-                        int seconds = PlayerRespawnTeleporter.TELEPORT_TIMER;
-                        int ticks = seconds * 20;
-                        PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime + ticks);
-
-                        ModMessages.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player,
-                                new S2CMessageRespawnTeleport(playerUUID, currentTime + ticks));
-                    }
-
-                    PlayerInfoManager.removeDidPlayerDie(playerUUID);
+                for (ItemStack token : tokens) {
+                    player.getInventory().add(token);
                 }
             }
         }
@@ -135,6 +112,7 @@ public class ModEventHandlers {
                     // Timer expired
                     PlayerRespawnTeleporter.teleportPlayer(player);
                     PlayerRespawnTeleporter.waitingToTeleport.remove(playerId);
+                    PlayerRespawnTeleporter.shouldTeleportOnRespawn.remove(playerId);
                 }
             }
         }
@@ -151,13 +129,8 @@ public class ModEventHandlers {
     }
 
     @SubscribeEvent
-    public static void onCommandsRegister(@NotNull RegisterCommandsEvent event) {
-        new LastDeathCommand(event.getDispatcher());
-    }
-
-    @SubscribeEvent
     public static void serverStartedEvent(ServerStartedEvent event) {
-        PlayerDataManager.loadPlayerData(event.getServer());
+        System.out.println("Respawn Token starting...");
     }
 
     @SubscribeEvent
@@ -180,8 +153,5 @@ public class ModEventHandlers {
 
 
     }
-
-
-
 
 }
