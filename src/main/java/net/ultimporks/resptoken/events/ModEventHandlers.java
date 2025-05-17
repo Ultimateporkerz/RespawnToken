@@ -15,14 +15,12 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.ultimporks.resptoken.configs.ModConfigs;
 import net.ultimporks.resptoken.Reference;
 import net.ultimporks.resptoken.RespawnToken;
-import net.ultimporks.resptoken.configs.PlayerDataManager;
 import net.ultimporks.resptoken.data.PlayerDataSavedData;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.init.ModItems;
@@ -133,12 +131,7 @@ public class ModEventHandlers {
 
     @SubscribeEvent
     public static void serverStartedEvent(ServerStartedEvent event) {
-        // PlayerDataManager.loadPlayerData(event.getServer());
-    }
-
-    @SubscribeEvent
-    public static void serverStoppingEvent(ServerStoppingEvent event) {
-        // PlayerDataManager.savePlayerData(event.getServer());
+        System.out.println("Respawn Token starting...");
     }
 
     @SubscribeEvent
