@@ -13,7 +13,7 @@ import net.ultimporks.resptoken.network.S2CMessageRespawnTeleport;
 public class ModMessages {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = ChannelBuilder.named(
-            ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "resptoken"))
+            ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "resptoken_network"))
             .serverAcceptedVersions((status, version) -> true)
             .clientAcceptedVersions((status, version) -> true)
             .networkProtocolVersion(1)

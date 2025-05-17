@@ -8,6 +8,7 @@ import net.ultimporks.resptoken.RespawnToken;
 import net.ultimporks.resptoken.configs.ModConfigs;
 import net.ultimporks.resptoken.data.PlayerInfo;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
+import net.ultimporks.resptoken.init.ModDataComponents;
 import net.ultimporks.resptoken.item.RespawnTokenItem;
 
 import java.util.*;
@@ -18,7 +19,6 @@ public class PlayerRespawnHandler {
     public static final HashMap<UUID, List<ItemStack>> tokenStorage = new HashMap<>();
 
     public static void checkInventory(Player player, boolean isInLava, boolean isInVoid) {
-        // Assuming PlayerInfoManager should be shared, consider making it a singleton or a dependency.
         AtomicBoolean hasRespawnToken = new AtomicBoolean(false);
         UUID playerUUID = player.getUUID();
         List<ItemStack> tokens = new ArrayList<>();
@@ -26,6 +26,9 @@ public class PlayerRespawnHandler {
         for (ItemStack stack : player.getInventory().items) {
             if (!stack.isEmpty() && stack.getItem() instanceof RespawnTokenItem) {
                 RespawnToken.LOGGING("Respawn Token detected in inventory!");
+                // Set the current items owner
+                stack.set(ModDataComponents.LAST_DEATH.get(), player.getOnPos());
+                stack.set(ModDataComponents.HAS_DIED.get(), true);
                 hasRespawnToken.set(true);
                 tokens.add(stack.copy());
             }

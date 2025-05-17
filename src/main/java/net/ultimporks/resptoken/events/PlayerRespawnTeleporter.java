@@ -88,7 +88,6 @@ public class PlayerRespawnTeleporter {
 
             if (!currentLevel.isClientSide) {
                 // Send network packet for invulnerability effect
-
                 ModMessages.sendToPlayer(new S2CMessageInvulnerableOverlay(playerUUID, currentTime + ticks), (ServerPlayer) player);
             }
         }
