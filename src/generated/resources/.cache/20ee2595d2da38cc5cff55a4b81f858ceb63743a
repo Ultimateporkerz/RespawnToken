@@ -1,4 +1,4 @@
-// 1.20.1	2025-03-08T22:20:44.8543151	Global Loot Modifiers : resptoken
+// 1.21.1	2025-05-15T22:34:21.807894	Global Loot Modifiers : resptoken
 62e8df3adef07e8fbb0a2f4731994e98d1234ab2 data/forge/loot_modifiers/global_loot_modifiers.json
 8930ddc08687621dda69a7b84e422d8d9cb53bf3 data/resptoken/loot_modifiers/respawn_token_abandoned_mineshaft.json
 ee750654651cbdc9045837937b6dc3f241150b4b data/resptoken/loot_modifiers/respawn_token_ancient_city.json
