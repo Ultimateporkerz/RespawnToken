@@ -15,16 +15,21 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
-    // Respawn Token
     public static final RegistryObject<Item> RESPAWN_TOKEN = ITEMS.register("respawn_token",
-            () -> new RespawnTokenItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+            () -> new RespawnTokenItem(new Item.Properties()
+                    .stacksTo(1)
+                    .durability(12)
+                    .rarity(Rarity.EPIC)));
 
-    // Crafting Items
     public static final RegistryObject<Item> TOKEN_PART = ITEMS.register("token_part",
-            () -> new TokenPartItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
+            () -> new TokenPartItem(new Item.Properties()
+                    .stacksTo(64)
+                    .rarity(Rarity.UNCOMMON)));
 
     public static final RegistryObject<Item> BINDING_GLUE = ITEMS.register("binding_glue",
-            () -> new BindingGlueItem(new Item.Properties().stacksTo(1).setNoRepair()));
+            () -> new BindingGlueItem(new Item.Properties()
+                    .stacksTo(1)
+                    .durability(8)));
 
     public static void registerItems(IEventBus eventBus) {
         ITEMS.register(eventBus);
