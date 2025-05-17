@@ -73,8 +73,6 @@ repositories {
 dependencies {
     // Minecraft
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    // Framework
-    implementation fg.deobf("curse.maven:framework-${framework_version}")
     // JEI
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
