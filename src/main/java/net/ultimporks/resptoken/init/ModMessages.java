@@ -16,7 +16,7 @@ public class ModMessages {
             ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "resptoken_network"))
             .serverAcceptedVersions((status, version) -> true)
             .clientAcceptedVersions((status, version) -> true)
-            .networkProtocolVersion(1)
+            .networkProtocolVersion(Integer.parseInt(PROTOCOL_VERSION))
             .simpleChannel();
 
     public static void register() {

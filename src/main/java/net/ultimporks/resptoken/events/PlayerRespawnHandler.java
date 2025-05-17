@@ -26,7 +26,6 @@ public class PlayerRespawnHandler {
         for (ItemStack stack : player.getInventory().items) {
             if (!stack.isEmpty() && stack.getItem() instanceof RespawnTokenItem) {
                 RespawnToken.LOGGING("Respawn Token detected in inventory!");
-                // Set the current items owner
                 stack.set(ModDataComponents.LAST_DEATH.get(), player.getOnPos());
                 stack.set(ModDataComponents.HAS_DIED.get(), true);
                 hasRespawnToken.set(true);

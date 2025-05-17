@@ -7,6 +7,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,9 +29,6 @@ public class PlayerDataSavedData extends SavedData {
         );
     }
 
-
-
-
     private PlayerDataSavedData() {}
 
     public static PlayerDataSavedData load(CompoundTag tag) {
@@ -43,7 +41,7 @@ public class PlayerDataSavedData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries) {
+    public @NotNull CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries) {
         ListTag list = new ListTag();
         for (UUID uuid : knownPlayers) {
             list.add(StringTag.valueOf(uuid.toString()));

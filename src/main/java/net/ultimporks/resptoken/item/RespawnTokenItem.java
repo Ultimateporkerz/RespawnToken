@@ -42,7 +42,7 @@ public class RespawnTokenItem extends Item {
 
         if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID)) {
             if (PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
-                PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, pLevel.getGameTime() + ticks);
+                PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime + ticks);
 
                 pContext.getItemInHand().set(ModDataComponents.HAS_DIED.get(), false);
 

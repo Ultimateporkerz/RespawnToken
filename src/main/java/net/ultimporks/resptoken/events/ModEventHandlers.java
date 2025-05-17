@@ -15,6 +15,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -75,14 +76,12 @@ public class ModEventHandlers {
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
         UUID playerUUID = player.getUUID();
-        if (PlayerInfoManager.hasDeathInfo(playerUUID)) {
-            if (PlayerInfoManager.didPlayerDie(playerUUID)) {
-                if (PlayerRespawnHandler.tokenStorage.containsKey(playerUUID)) {
-                    List<ItemStack> tokens = PlayerRespawnHandler.tokenStorage.remove(playerUUID);
+        if (PlayerInfoManager.hasDeathInfo(playerUUID) && PlayerInfoManager.didPlayerDie(playerUUID)) {
+            if (PlayerRespawnHandler.tokenStorage.containsKey(playerUUID)) {
+                List<ItemStack> tokens = PlayerRespawnHandler.tokenStorage.remove(playerUUID);
 
-                    for (ItemStack token : tokens) {
-                        player.getInventory().add(token);
-                    }
+                for (ItemStack token : tokens) {
+                    player.getInventory().add(token);
                 }
             }
         }
@@ -154,8 +153,5 @@ public class ModEventHandlers {
 
 
     }
-
-
-
 
 }
