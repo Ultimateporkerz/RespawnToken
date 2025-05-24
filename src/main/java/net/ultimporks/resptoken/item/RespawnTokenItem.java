@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -54,14 +55,14 @@ public class RespawnTokenItem extends Item {
         int ticks = seconds * 20;
         long currentTime = pLevel.getGameTime() + ticks;
 
+
+
         if (!pLevel.isClientSide()) {
             if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID) && PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime);
 
-                pContext.getItemInHand().hurtAndBreak(1, pContext.getPlayer(), (player) -> {
-                    player.broadcastBreakEvent(pContext.getHand());
-                    RespawnToken.LOGGING("Damaged the Respawn Token 1 HP!");
-                });
+                pPlayer.getItemInHand(InteractionHand.MAIN_HAND).hurtAndBreak(1, pPlayer, e ->
+                        e.broadcastBreakEvent(pContext.getHand()));
 
                 // Update the client
                 ModMessages.sendToPlayer(new S2CMessageRespawnTeleport(playerUUID, currentTime), ((ServerPlayer) pPlayer));
