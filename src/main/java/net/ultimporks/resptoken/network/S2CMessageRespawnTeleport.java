@@ -8,8 +8,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class S2CMessageRespawnTeleport {
-    private UUID playerUUID;
-    private long endTime;
+    private final UUID playerUUID;
+    private final long endTime;
 
     public S2CMessageRespawnTeleport(UUID playerUUID, long endTime) {
         this.playerUUID = playerUUID;

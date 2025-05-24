@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +20,7 @@ public class TeleportOverlay {
     private static final Minecraft CLIENT = Minecraft.getInstance();
 
     @SubscribeEvent
-    public static void onRenderOverlay(ScreenEvent.Render.Pre event) {
+    public static void onRenderOverlay(RenderGuiOverlayEvent event) {
         Player player = CLIENT.player;
 
         if (player != null) {

@@ -1,5 +1,6 @@
 package net.ultimporks.resptoken.init;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -10,10 +11,10 @@ import net.ultimporks.resptoken.Reference;
 import net.ultimporks.resptoken.loot.AddItemModifier;
 
 public class ModLootModifiers {
-    public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIER_SERIALIZERS =
+    public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIER_SERIALIZERS =
             DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Reference.MOD_ID);
 
-    public static final RegistryObject<MapCodec<? extends IGlobalLootModifier>> ADD_ITEM =
+    public static final RegistryObject<Codec<? extends IGlobalLootModifier>> ADD_ITEM =
             LOOT_MODIFIER_SERIALIZERS.register("add_item", () -> AddItemModifier.CODEC);
 
     public static void register(IEventBus eventBus) {

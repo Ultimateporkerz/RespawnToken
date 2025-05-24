@@ -1,6 +1,6 @@
 package net.ultimporks.resptoken.loot;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.Item;
@@ -13,11 +13,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class AddItemModifier extends LootModifier {
-    public static final MapCodec<AddItemModifier> CODEC = RecordCodecBuilder.mapCodec(inst -> codecStart(inst)
-            .and(ForgeRegistries.ITEMS.getCodec()
-                    .fieldOf("item")
-                    .forGetter(m -> m.item))
-            .apply(inst, AddItemModifier::new));
+    public static final Codec<AddItemModifier> CODEC = RecordCodecBuilder.create(inst ->
+            LootModifier.codecStart(inst)
+                    .and(ForgeRegistries.ITEMS.getCodec()
+                            .fieldOf("item")
+                            .forGetter(modifier -> modifier.item))
+                    .apply(inst, AddItemModifier::new)
+    );
 
     private final Item item;
 
@@ -39,7 +41,7 @@ public class AddItemModifier extends LootModifier {
     }
 
     @Override
-    public MapCodec<? extends IGlobalLootModifier> codec() {
+    public Codec<? extends IGlobalLootModifier> codec() {
         return CODEC;
     }
 }

@@ -109,15 +109,15 @@ public class DeathChestBlockEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
+    public void load(CompoundTag pTag) {
+        super.load(pTag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(pTag, this.items, pRegistries);
+        ContainerHelper.loadAllItems(pTag, this.items);
     }
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(pTag, pRegistries);
-        ContainerHelper.saveAllItems(pTag, this.items, pRegistries);
+    protected void saveAdditional(CompoundTag pTag) {
+        super.saveAdditional(pTag);
+        ContainerHelper.saveAllItems(pTag, this.items);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class DeathChestBlockEntity extends RandomizableContainerBlockEntity impl
         return ClientboundBlockEntityDataPacket.create(this);
     }
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 }

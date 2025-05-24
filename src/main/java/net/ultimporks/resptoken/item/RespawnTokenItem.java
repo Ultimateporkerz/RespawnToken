@@ -13,6 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.ultimporks.resptoken.RespawnToken;
+import net.ultimporks.resptoken.configs.ModConfigs;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.events.PlayerRespawnTeleporter;
 import net.ultimporks.resptoken.init.ModMessages;
@@ -28,7 +29,9 @@ public class RespawnTokenItem extends Item {
     public RespawnTokenItem(Properties properties) {
         super(properties);
     }
-    private static final int MAX_DAMAGE = 12;
+    private static final int MAX_DAMAGE = 8;
+
+
 
     @Override
     public void appendHoverText(@Nonnull ItemStack pStack, @Nullable Level pLevel, @Nonnull List<Component> pTooltipcomponents, @Nonnull TooltipFlag pIsAdvanced) {
@@ -55,8 +58,6 @@ public class RespawnTokenItem extends Item {
             if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID) && PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime);
 
-                pContext.getItemInHand().getOrCreateTag().putBoolean("has_died", false);
-
                 pContext.getItemInHand().hurtAndBreak(1, pContext.getPlayer(), (player) -> {
                     player.broadcastBreakEvent(pContext.getHand());
                     RespawnToken.LOGGING("Damaged the Respawn Token 1 HP!");
@@ -65,13 +66,14 @@ public class RespawnTokenItem extends Item {
                 // Update the client
                 ModMessages.sendToPlayer(new S2CMessageRespawnTeleport(playerUUID, currentTime), ((ServerPlayer) pPlayer));
 
+                pContext.getItemInHand().getOrCreateTag().putBoolean("has_died", false);
+
                 PlayerInfoManager.removeDidPlayerDie(playerUUID);
                 return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
     }
-
 
     @Override
     public int getBarWidth(ItemStack stack) {
@@ -85,12 +87,15 @@ public class RespawnTokenItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
+        if (ModConfigs.COMMON.respawnTokenMaxDamage.get() != -1) {
+            return ModConfigs.COMMON.respawnTokenMaxDamage.get();
+        }
         return MAX_DAMAGE;
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        return true;
+        return ModConfigs.COMMON.respawnTokenMaxDamage.get() != -1;
     }
 
     @Override

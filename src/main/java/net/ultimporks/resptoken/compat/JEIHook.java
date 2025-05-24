@@ -12,7 +12,7 @@ import net.ultimporks.resptoken.Reference;
 public class JEIHook implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "jei_plugin");
+        return new ResourceLocation(Reference.MOD_ID, "jei_plugin");
     }
 
     @Override

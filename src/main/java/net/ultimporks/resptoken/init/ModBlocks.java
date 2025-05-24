@@ -20,9 +20,9 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> DEATH_CHEST = registerBlock("death_chest",
             () -> new DeathChestBlock(BlockBehaviour.Properties.of()
-                    .strength(2.5F, 15000.0F)  // Set block hardness and resistance
-                    .sound(SoundType.WOOD),
-                    ModBlockEntities.DEATH_CHEST_BE::get));
+                    .strength(1.5F, 50.5F)
+                    .destroyTime(1.0F)
+                    .sound(SoundType.WOOD)));
 
 
 

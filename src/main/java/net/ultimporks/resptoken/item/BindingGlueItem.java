@@ -5,12 +5,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.ultimporks.resptoken.configs.ModConfigs;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class BindingGlueItem extends Item {
-    private static final int MAX_DAMAGE = 12;
+    private static final int MAX_DAMAGE = 8;
 
     public BindingGlueItem(Properties pProperties) {
         super(pProperties);
@@ -24,12 +25,15 @@ public class BindingGlueItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
+        if (ModConfigs.COMMON.bindingGlueMaxDamage.get() != -1) {
+            return ModConfigs.COMMON.bindingGlueMaxDamage.get();
+        }
         return MAX_DAMAGE;
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        return true;
+        return ModConfigs.COMMON.bindingGlueMaxDamage.get() != -1;
     }
 
     @Override
