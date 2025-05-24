@@ -23,10 +23,7 @@ public class PlayerDataSavedData extends SavedData {
                 new SavedData.Factory<>(
                         PlayerDataSavedData::new,
                         (tag, provider) -> PlayerDataSavedData.load(tag),
-                        DataFixTypes.LEVEL
-                ),
-                DATA_NAME
-        );
+                        DataFixTypes.LEVEL), DATA_NAME);
     }
 
     private PlayerDataSavedData() {}

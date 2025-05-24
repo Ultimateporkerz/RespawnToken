@@ -7,8 +7,8 @@ import net.ultimporks.resptoken.events.PlayerRespawnTeleporter;
 import java.util.UUID;
 
 public class S2CMessageInvulnerableOverlay {
-    private UUID playerUUID;
-    private long endTime;
+    private final UUID playerUUID;
+    private final long endTime;
 
     public S2CMessageInvulnerableOverlay(UUID playerUUID, long endTime) {
         this.playerUUID = playerUUID;

@@ -29,6 +29,7 @@ public class RespawnTokenItem extends Item {
     public RespawnTokenItem(Properties properties) {
         super(properties);
     }
+    private static final int MAX_DAMAGE = 8;
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext pContext) {
@@ -44,20 +45,19 @@ public class RespawnTokenItem extends Item {
             if (PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime + ticks);
 
-                pContext.getItemInHand().set(ModDataComponents.HAS_DIED.get(), false);
-
                 if (!pLevel.isClientSide) {
                     pContext.getItemInHand().hurtAndBreak(1, ((ServerLevel) pLevel), ((ServerPlayer) pContext.getPlayer()),
                             item -> pContext.getPlayer().onEquippedItemBroken(item, EquipmentSlot.MAINHAND));
                     RespawnToken.LOGGING("Damaged the Respawn Token 1 HP!");
-                }
 
-                // Update the Client
-                ModMessages.sendToPlayer(new S2CMessageRespawnTeleport
-                        (playerUUID, currentTime + ticks),
-                        ((ServerPlayer) pPlayer));
+                    // Update the Client
+                    ModMessages.sendToPlayer(new S2CMessageRespawnTeleport
+                                    (playerUUID, currentTime + ticks),
+                            ((ServerPlayer) pPlayer));
+                }
             }
             PlayerInfoManager.removeDidPlayerDie(playerUUID);
+            pContext.getItemInHand().set(ModDataComponents.HAS_DIED.get(), false);
         }
         return InteractionResult.SUCCESS;
     }
@@ -88,6 +88,12 @@ public class RespawnTokenItem extends Item {
 
     @Override
     public boolean isFoil(ItemStack pStack) {
-        return Boolean.TRUE.equals(pStack.get(ModDataComponents.HAS_DIED.get()));
+        if (Boolean.TRUE.equals(pStack.get(ModDataComponents.HAS_DIED.get()))) {
+            return true;
+        } else if (Boolean.FALSE.equals(pStack.get(ModDataComponents.HAS_DIED.get()))) {
+            return false;
+
+        }
+        return false;
     }
 }
