@@ -27,12 +27,12 @@ public class PlayerRespawnHandler {
 
         for (ItemStack stack : player.getInventory().items) {
             if (stack.getItem() instanceof RespawnTokenItem) {
+                hasRespawnToken.set(true);
                 RespawnToken.LOGGING("Respawn Token detected in inventory.");
                 stack.getOrCreateTag().putInt("xPos", player.getOnPos().getX());
                 stack.getOrCreateTag().putInt("yPos", player.getOnPos().getY());
                 stack.getOrCreateTag().putInt("zPos", player.getOnPos().getZ());
                 stack.getOrCreateTag().putBoolean("has_died", true);
-                hasRespawnToken.set(true);
                 tokens.add(stack.copy());
             }
         }
@@ -48,11 +48,11 @@ public class PlayerRespawnHandler {
                             ItemStack stack = handler.getStacks().getStackInSlot(i);
                             if (stack.getItem() instanceof RespawnTokenItem) {
                                 RespawnToken.LOGGING("Respawn Token detected in bauble slot.");
+                                hasRespawnToken.set(true);
                                 stack.getOrCreateTag().putInt("xPos", player.getOnPos().getX());
                                 stack.getOrCreateTag().putInt("yPos", player.getOnPos().getY());
                                 stack.getOrCreateTag().putInt("zPos", player.getOnPos().getZ());
                                 stack.getOrCreateTag().putBoolean("has_died", true);
-                                hasRespawnToken.set(true);
                                 tokens.add(stack.copy());
                             }
                         }

@@ -36,12 +36,15 @@ public class RespawnTokenItem extends Item {
 
     @Override
     public void appendHoverText(@Nonnull ItemStack pStack, @Nullable Level pLevel, @Nonnull List<Component> pTooltipcomponents, @Nonnull TooltipFlag pIsAdvanced) {
-        pTooltipcomponents.add(Component.translatable("tooltip.resptoken.respawn_token").withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD));
         BlockPos deathPos = new BlockPos(pStack.getOrCreateTag().getInt("xPos"), pStack.getOrCreateTag().getInt("yPos"), pStack.getOrCreateTag().getInt("zPos"));
-        pTooltipcomponents.add(Component.literal("Last Death: (" + deathPos.getX() + ", " + deathPos.getY() + ", " + deathPos.getZ() + ")").withStyle(ChatFormatting.BOLD, ChatFormatting.RED));
-        pTooltipcomponents.add(Component.translatable("tooltip.resptoken.more_info").withStyle(ChatFormatting.BOLD, ChatFormatting.GRAY));
+        pTooltipcomponents.add(Component.translatable("tooltip.resptoken.respawn_token_info").withStyle(ChatFormatting.BOLD));
+        // Player is holding Shift
         if (Screen.hasShiftDown()) {
-            pTooltipcomponents.add(Component.translatable("tooltip.resptoken.respawn_token_info").withStyle(ChatFormatting.BOLD));
+            pTooltipcomponents.add(Component.translatable("tooltip.resptoken.respawn_token").withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD));
+            pTooltipcomponents.add(Component.literal("------------------------").withStyle(ChatFormatting.GRAY));
+            pTooltipcomponents.add(Component.literal("Last Death: (" + deathPos.getX() + ", " + deathPos.getY() + ", " + deathPos.getZ() + ")").withStyle(ChatFormatting.BOLD, ChatFormatting.RED));
+        } else {
+            pTooltipcomponents.add(Component.translatable("tooltip.resptoken.more_info").withStyle(ChatFormatting.BOLD, ChatFormatting.GRAY));
         }
         super.appendHoverText(pStack, pLevel, pTooltipcomponents, pIsAdvanced);
     }

@@ -59,6 +59,10 @@ public class DeathChestHandler {
                         curiosInventory.getStacksHandler(identifier).ifPresent(handler -> {
                             for (int i = 0; i < handler.getSlots(); i++) {
                                 ItemStack stack = handler.getStacks().getStackInSlot(i);
+                                if (stack.getItem() instanceof RespawnTokenItem) {
+                                    stack.setCount(0);
+                                }
+
                                 if (!stack.isEmpty()) {
                                     slotIndex.set(distributeItem(stack, chestEntity, chestSlots, slotIndex.get(), level, chestPos));
                                     handler.getStacks().setStackInSlot(i, ItemStack.EMPTY);
