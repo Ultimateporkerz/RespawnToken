@@ -7,6 +7,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +46,11 @@ public class RespawnTokenItem extends Item {
 
         if (!pLevel.isClientSide()) {
             if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID) && PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
+
+                if (ModConfigs.COMMON.teleportCountdown.get() != 0) {
+                    pLevel.playSound(null, pPlayer.getOnPos(), SoundEvents.AMETHYST_CLUSTER_PLACE, SoundSource.AMBIENT);
+                }
+
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime + ticks);
 
                 pContext.getItemInHand().hurtAndBreak(1, ((ServerLevel) pLevel), ((ServerPlayer) pContext.getPlayer()),
@@ -60,7 +67,7 @@ public class RespawnTokenItem extends Item {
 
             }
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -99,14 +106,5 @@ public class RespawnTokenItem extends Item {
 
         }
         return false;
-    }
-
-    @Override
-    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
-        super.onCraftedBy(pStack, pLevel, pPlayer);
-        if (ModConfigs.COMMON.respawnTokenMaxDamage.get() != 1) {
-            pStack.set(DataComponents.MAX_DAMAGE, ModConfigs.COMMON.respawnTokenMaxDamage.get());
-            pStack.set(DataComponents.DAMAGE, 0);
-        }
     }
 }

@@ -5,7 +5,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.ultimporks.resptoken.RespawnToken;
-import net.ultimporks.resptoken.configs.ModConfigs;
 import net.ultimporks.resptoken.data.PlayerInfo;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.init.ModDataComponents;
@@ -18,7 +17,7 @@ public class PlayerRespawnHandler {
 
     public static final HashMap<UUID, List<ItemStack>> tokenStorage = new HashMap<>();
 
-    public static void checkInventory(Player player, boolean isInLava, boolean isInVoid) {
+    public static void checkInventory(Player player, boolean isInLava, boolean isInVoid, boolean isDeathChestEnabled) {
         AtomicBoolean hasRespawnToken = new AtomicBoolean(false);
         UUID playerUUID = player.getUUID();
         List<ItemStack> tokens = new ArrayList<>();
@@ -30,6 +29,9 @@ public class PlayerRespawnHandler {
                 stack.set(ModDataComponents.HAS_DIED.get(), true);
                 hasRespawnToken.set(true);
                 tokens.add(stack.copy());
+                if (!isDeathChestEnabled) {
+                    stack.copyAndClear();
+                }
             }
         }
 
@@ -59,16 +61,12 @@ public class PlayerRespawnHandler {
         PlayerInfo playerInfo = new PlayerInfo(player);
         PlayerInfoManager.addPlayerInfo(playerUUID, playerInfo);
 
-
-        // Handle death coordinates and death chest
-        if (ModConfigs.COMMON.enableDeathChest.get() && !isInVoid) {
-            if (player.level() instanceof ServerLevel serverLevel) {
-                DeathChestHandler.placeDeathChest(player, serverLevel, player.blockPosition());
-            }
-        } else if (isInVoid && ModConfigs.COMMON.enableDeathChest.get()) {
-            if (player.level() instanceof ServerLevel serverLevel) {
+        if (isDeathChestEnabled && player.level() instanceof ServerLevel serverLevel) {
+            if (isInVoid) {
                 BlockPos safeBlockPos = PlayerRespawnTeleporter.getSafeBlockPosition(playerUUID);
                 DeathChestHandler.placeDeathChest(player, serverLevel, safeBlockPos);
+            } else {
+                DeathChestHandler.placeDeathChest(player, serverLevel, player.blockPosition());
             }
         }
     }

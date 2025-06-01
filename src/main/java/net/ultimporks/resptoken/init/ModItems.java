@@ -18,6 +18,7 @@ public class ModItems {
     public static final RegistryObject<Item> RESPAWN_TOKEN = ITEMS.register("respawn_token",
             () -> new RespawnTokenItem(new Item.Properties()
                     .stacksTo(1)
+                    .durability(8)
                     .rarity(Rarity.EPIC)));
 
     public static final RegistryObject<Item> TOKEN_PART = ITEMS.register("token_part",

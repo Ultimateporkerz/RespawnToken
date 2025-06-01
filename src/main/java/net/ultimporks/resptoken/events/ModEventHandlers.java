@@ -1,7 +1,6 @@
 package net.ultimporks.resptoken.events;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -14,9 +13,8 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,6 +24,7 @@ import net.ultimporks.resptoken.RespawnToken;
 import net.ultimporks.resptoken.data.PlayerDataSavedData;
 import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.init.ModItems;
+import net.ultimporks.resptoken.item.RespawnTokenItem;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,31 +34,41 @@ public class ModEventHandlers {
 
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity().level().isClientSide) return;
         ServerPlayer player = (ServerPlayer) event.getEntity();
         UUID playerUUID = player.getUUID();
-
         PlayerRespawnTeleporter.invulnerablePlayers.remove(playerUUID);
         player.setInvulnerable(false);
         player.setInvisible(false);
     }
 
     @SubscribeEvent
-    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (!event.getEntity().level().isClientSide) {
-            ServerPlayer player = (ServerPlayer) event.getEntity();
-            UUID playerUUID = player.getUUID();
-            PlayerDataSavedData data = PlayerDataSavedData.get(player.getServer());
+    public static void onItemPickup(EntityItemPickupEvent event) {
+        if (event.getEntity().level().isClientSide) return;
+        Player player = event.getEntity();
+        ItemStack pickedUp = event.getItem().getItem();
 
-            if (ModConfigs.COMMON.firstTimePlayers.get() && !data.isPlayerKnown(playerUUID)) {
-                RespawnToken.LOGGING("(ModEventHandlers) - New Player Detected!");
-                data.addPlayer(playerUUID);
-                ItemStack respawnToken = new ItemStack(ModItems.RESPAWN_TOKEN.get());
-                if (ModConfigs.COMMON.respawnTokenMaxDamage.get() != 1) {
-                    respawnToken.set(DataComponents.MAX_DAMAGE, ModConfigs.COMMON.respawnTokenMaxDamage.get());
-                    respawnToken.set(DataComponents.DAMAGE, 0);
+        if (pickedUp.getItem() instanceof RespawnTokenItem) {
+            for (ItemStack stack : player.getInventory().items) {
+                if (stack.getItem() instanceof RespawnTokenItem) {
+                    event.setCanceled(true);
+                    return;
                 }
-                player.getInventory().add(respawnToken);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity().level().isClientSide) return;
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        UUID playerUUID = player.getUUID();
+        PlayerDataSavedData data = PlayerDataSavedData.get(player.getServer());
+        if (ModConfigs.COMMON.firstTimePlayers.get() && !data.isPlayerKnown(playerUUID)) {
+            RespawnToken.LOGGING("(ModEventHandlers) - New Player Detected!");
+            data.addPlayer(playerUUID);
+            ItemStack respawnToken = new ItemStack(ModItems.RESPAWN_TOKEN.get());
+            player.getInventory().add(respawnToken);
         }
     }
 
@@ -73,12 +82,14 @@ public class ModEventHandlers {
 
         boolean isInLava = event.getEntity().isInLava();
         boolean isInVoid = event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD) && player.level().dimension().equals(ServerLevel.END);
+        boolean isDeathChestEnabled = ModConfigs.COMMON.enableDeathChest.get();
 
-        PlayerRespawnHandler.checkInventory(player, isInLava, isInVoid);
+        PlayerRespawnHandler.checkInventory(player, isInLava, isInVoid, isDeathChestEnabled);
     }
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity().level().isClientSide) return;
         Player player = event.getEntity();
         UUID playerUUID = player.getUUID();
         if (PlayerInfoManager.hasDeathInfo(playerUUID) && PlayerInfoManager.didPlayerDie(playerUUID)) {
@@ -131,11 +142,6 @@ public class ModEventHandlers {
         }
 
 
-    }
-
-    @SubscribeEvent
-    public static void serverStartedEvent(ServerStartedEvent event) {
-        System.out.println("Respawn Token starting...");
     }
 
     @SubscribeEvent
