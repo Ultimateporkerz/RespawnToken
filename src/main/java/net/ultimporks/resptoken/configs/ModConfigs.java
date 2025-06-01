@@ -25,10 +25,6 @@ public class ModConfigs {
         public final ModConfigSpec.BooleanValue lavaDeathExtendInvulnerability;
         public final ModConfigSpec.IntValue lavaDeathExtensionAmount;
         public final ModConfigSpec.BooleanValue enableDeathChest;
-        // Respawn Token
-        public final ModConfigSpec.IntValue respawnTokenMaxDamage;
-        // Glue
-        public final ModConfigSpec.IntValue bindingGlueMaxDamage;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.comment("General Settings").push("general");
@@ -63,14 +59,6 @@ public class ModConfigs {
             enableDeathChest = builder
                     .comment("Should death chests be enabled? This will save the players inventory in a chest upon death. (default true)")
                     .define("enableDeathChest", true);
-
-            respawnTokenMaxDamage = builder
-                    .comment("How much durability should the Respawn Token have? (Default 8)")
-                    .defineInRange("tokenDurability", 8, 1, Integer.MAX_VALUE);
-
-            bindingGlueMaxDamage = builder
-                    .comment("How much durability should the Binding Glue have? (Default 8)")
-                    .defineInRange("glueDurability", 8, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

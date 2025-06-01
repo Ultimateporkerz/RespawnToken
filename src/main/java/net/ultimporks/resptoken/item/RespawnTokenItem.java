@@ -51,7 +51,7 @@ public class RespawnTokenItem extends Item {
             if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID) && PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerName)) {
 
                 if (ModConfigs.COMMON.teleportCountdown.get() != 0) {
-                    pLevel.playSound(null, pPlayer.getOnPos(), SoundEvents.APPLY_EFFECT_TRIAL_OMEN, SoundSource.AMBIENT);
+                    pLevel.playSound(null, pPlayer.getOnPos(), SoundEvents.AMETHYST_CLUSTER_PLACE, SoundSource.AMBIENT);
                 }
 
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerName, currentTime + ticks);
@@ -68,7 +68,7 @@ public class RespawnTokenItem extends Item {
 
             }
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -98,18 +98,6 @@ public class RespawnTokenItem extends Item {
         return false;
     }
 
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        if (ModConfigs.COMMON.respawnTokenMaxDamage.get() != -1) {
-            return ModConfigs.COMMON.respawnTokenMaxDamage.get();
-        }
-        return super.getMaxDamage(stack);
-    }
-
-    @Override
-    public boolean isDamageable(ItemStack stack) {
-        return ModConfigs.COMMON.respawnTokenMaxDamage.get() != -1;
-    }
 
     @Override
     public boolean isFoil(ItemStack pStack) {
@@ -120,14 +108,5 @@ public class RespawnTokenItem extends Item {
 
         }
         return false;
-    }
-
-    @Override
-    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
-        super.onCraftedBy(pStack, pLevel, pPlayer);
-        if (ModConfigs.COMMON.respawnTokenMaxDamage.get() != 1) {
-            pStack.set(DataComponents.MAX_DAMAGE, ModConfigs.COMMON.respawnTokenMaxDamage.get());
-            pStack.set(DataComponents.DAMAGE, 0);
-        }
     }
 }

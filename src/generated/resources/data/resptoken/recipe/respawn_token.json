@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "0": {
+      "item": "resptoken:binding_glue"
+    },
+    "1": {
+      "item": "resptoken:token_part"
+    }
+  },
+  "pattern": [
+    "   ",
+    "101",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "resptoken:respawn_token"
+  }
+}

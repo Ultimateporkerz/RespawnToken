@@ -16,6 +16,7 @@ public class ModItems {
     public static final DeferredItem<Item> RESPAWN_TOKEN = ITEMS.register("respawn_token",
             () -> new RespawnTokenItem(new Item.Properties()
                     .stacksTo(1)
+                    .durability(8)
                     .rarity(Rarity.EPIC)));
 
     public static final DeferredItem<Item> TOKEN_PART = ITEMS.register("token_part",
@@ -25,7 +26,8 @@ public class ModItems {
 
     public static final DeferredItem<Item> BINDING_GLUE = ITEMS.register("binding_glue",
             () -> new BindingGlueItem(new Item.Properties()
-                    .stacksTo(1)));
+                    .stacksTo(1)
+                    .durability(8)));
 
 
     public static void registerItems(IEventBus eventBus) {

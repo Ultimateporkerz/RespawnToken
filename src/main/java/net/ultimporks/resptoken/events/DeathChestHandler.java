@@ -19,8 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DeathChestHandler {
 
-
-
     /**
      * Places a chest (or double chest) at the given position and fills it with the player's inventory.
      *
@@ -29,14 +27,8 @@ public class DeathChestHandler {
      * @param deathPos The position to place the chest.
      */
     public static void placeDeathChest(Player player, ServerLevel level, BlockPos deathPos) {
-
-        if (isInventoryCompletelyEmpty(player)) {
-            fillChestWithInventory(player, level, deathPos, false);
-            return;
-        }
-
-        fillChestWithInventory(player, level, deathPos, true);
         level.setBlock(deathPos, ModBlocks.DEATH_CHEST.get().defaultBlockState().setValue(ChestBlock.FACING, Direction.NORTH), 3);
+        fillChestWithInventory(player, level, deathPos, true);
     }
 
     /**
@@ -124,48 +116,6 @@ public class DeathChestHandler {
         }
         return index;
     }
-
-    private static boolean isInventoryCompletelyEmpty(Player player) {
-        // Check main inventory
-        for (ItemStack stack : player.getInventory().items) {
-            if (!stack.isEmpty() && !(stack.getItem() instanceof RespawnTokenItem)) {
-                return false;
-            }
-        }
-
-        // Check armor
-        for (ItemStack stack : player.getInventory().armor) {
-            if (!stack.isEmpty() && !(stack.getItem() instanceof RespawnTokenItem)) {
-                return false;
-            }
-        }
-
-        // Check offhand
-        for (ItemStack stack : player.getInventory().offhand) {
-            if (!stack.isEmpty() && !(stack.getItem() instanceof RespawnTokenItem)) {
-                return false;
-            }
-        }
-
-        // Check Curios inventory if installed
-        if (CompatCheck.IS_CURIOS_INSTALLED) {
-            return CuriosApi.getCuriosInventory(player).map(curiosInventory ->
-                    curiosInventory.getCurios().values().stream().allMatch(handler -> {
-                        for (int i = 0; i < handler.getSlots(); i++) {
-                            ItemStack stack = handler.getStacks().getStackInSlot(i);
-                            if (!stack.isEmpty() && !(stack.getItem() instanceof RespawnTokenItem)) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    })
-            ).orElse(true); // If curios present but empty, treat as empty
-        }
-
-        // All inventories are empty or only have RespawnTokenItems
-        return true;
-    }
-
 
 
 }

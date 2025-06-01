@@ -16,20 +16,19 @@ import net.ultimporks.resptoken.data.PlayerInfoManager;
 import net.ultimporks.resptoken.network.S2CMessageInvulnerableOverlay;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerRespawnTeleporter {
-    public static final Map<UUID, Boolean> shouldTeleportOnRespawn = new ConcurrentHashMap<>();
-    public static final Map<UUID, Boolean> shouldExtendInvulnerabilityTimer = new ConcurrentHashMap<>();
-    public static final Map<UUID, Boolean> shouldTeleportToSafePosition = new ConcurrentHashMap<>();
+    public static final Map<UUID, Boolean> shouldTeleportOnRespawn = new HashMap<>();
+    public static final Map<UUID, Boolean> shouldExtendInvulnerabilityTimer = new HashMap<>();
+    public static final Map<UUID, Boolean> shouldTeleportToSafePosition = new HashMap<>();
 
     // Saves safe positions if player dies in the end.
-    public static final Map<UUID, List<BlockPos>> safePlayerBlockPosition = new ConcurrentHashMap<>();
+    public static final Map<UUID, List<BlockPos>> safePlayerBlockPosition = new HashMap<>();
 
-    public static final Map<String, Long> invulnerablePlayers = new ConcurrentHashMap<>();
+    public static final Map<String, Long> invulnerablePlayers = new HashMap<>();
     public final static int INVULNERABLE_TIMER = ModConfigs.COMMON.invulnerabilityCountdown.get();
 
-    public static final Map<String, Long> waitingToTeleport = new ConcurrentHashMap<>();
+    public static final Map<String, Long> waitingToTeleport = new HashMap<>();
     public final static int TELEPORT_TIMER = ModConfigs.COMMON.teleportCountdown.get();
 
     public static void teleportPlayer(Player player) {
