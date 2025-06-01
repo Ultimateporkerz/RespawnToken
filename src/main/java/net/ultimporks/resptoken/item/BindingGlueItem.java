@@ -25,9 +25,6 @@ public class BindingGlueItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        if (ModConfigs.COMMON.bindingGlueMaxDamage.get() != -1) {
-            return ModConfigs.COMMON.bindingGlueMaxDamage.get();
-        }
         return MAX_DAMAGE;
     }
 

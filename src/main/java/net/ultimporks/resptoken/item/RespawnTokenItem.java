@@ -5,6 +5,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -60,11 +63,14 @@ public class RespawnTokenItem extends Item {
 
         if (!pLevel.isClientSide()) {
             if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID) && PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
+
+                if (ModConfigs.COMMON.teleportCountdown.get() != 0) {
+                    pLevel.playSound(null, pPlayer.getOnPos(), SoundEvents.AMETHYST_CLUSTER_PLACE, SoundSource.AMBIENT);
+                }
+
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime);
 
-                pPlayer.getItemInHand(InteractionHand.MAIN_HAND).hurtAndBreak(1, pPlayer, e ->
-                        e.broadcastBreakEvent(pContext.getHand()));
-                RespawnToken.LOGGING("Damaged the Respawn Token 1HP!");
+                pPlayer.getItemInHand(InteractionHand.MAIN_HAND).hurtAndBreak(1, pPlayer, e -> e.broadcastBreakEvent(pContext.getHand()));
 
                 // Update the client
                 ModMessages.sendToPlayer(new S2CMessageRespawnTeleport(playerUUID, currentTime), ((ServerPlayer) pPlayer));
@@ -90,15 +96,12 @@ public class RespawnTokenItem extends Item {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        if (ModConfigs.COMMON.respawnTokenMaxDamage.get() != -1) {
-            return ModConfigs.COMMON.respawnTokenMaxDamage.get();
-        }
         return MAX_DAMAGE;
     }
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        return ModConfigs.COMMON.respawnTokenMaxDamage.get() != -1;
+        return true;
     }
 
     @Override

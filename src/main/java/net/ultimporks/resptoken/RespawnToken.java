@@ -1,6 +1,5 @@
 package net.ultimporks.resptoken;
 
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
@@ -53,5 +52,4 @@ public class RespawnToken {
             LOGGER.info("RespawnToken LOGGER {}", message);
         }
     }
-
 }
