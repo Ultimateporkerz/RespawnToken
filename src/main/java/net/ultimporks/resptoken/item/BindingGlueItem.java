@@ -33,7 +33,7 @@ public class BindingGlueItem extends Item {
 
     @Override
     public boolean isDamageable(ItemStack stack) {
-        return ModConfigs.COMMON.bindingGlueMaxDamage.get() != -1;
+        return true;
     }
 
     @Override

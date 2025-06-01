@@ -58,14 +58,13 @@ public class RespawnTokenItem extends Item {
         int ticks = seconds * 20;
         long currentTime = pLevel.getGameTime() + ticks;
 
-
-
         if (!pLevel.isClientSide()) {
             if (PlayerRespawnTeleporter.shouldTeleportOnRespawn(playerUUID) && PlayerInfoManager.hasPlayerInfo(playerUUID) && !PlayerRespawnTeleporter.waitingToTeleport.containsKey(playerUUID)) {
                 PlayerRespawnTeleporter.waitingToTeleport.put(playerUUID, currentTime);
 
                 pPlayer.getItemInHand(InteractionHand.MAIN_HAND).hurtAndBreak(1, pPlayer, e ->
                         e.broadcastBreakEvent(pContext.getHand()));
+                RespawnToken.LOGGING("Damaged the Respawn Token 1HP!");
 
                 // Update the client
                 ModMessages.sendToPlayer(new S2CMessageRespawnTeleport(playerUUID, currentTime), ((ServerPlayer) pPlayer));

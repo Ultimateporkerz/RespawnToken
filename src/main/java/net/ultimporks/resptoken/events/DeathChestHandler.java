@@ -8,15 +8,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.ultimporks.resptoken.block.blockentity.DeathChestBlockEntity;
 import net.ultimporks.resptoken.compat.CompatCheck;
 import net.ultimporks.resptoken.init.ModBlocks;
 import net.ultimporks.resptoken.item.RespawnTokenItem;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DeathChestHandler {

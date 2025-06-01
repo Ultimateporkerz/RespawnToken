@@ -18,7 +18,6 @@ public class ModItems {
     public static final RegistryObject<Item> RESPAWN_TOKEN = ITEMS.register("respawn_token",
             () -> new RespawnTokenItem(new Item.Properties()
                     .stacksTo(1)
-                    .durability(12)
                     .rarity(Rarity.EPIC)));
 
     public static final RegistryObject<Item> TOKEN_PART = ITEMS.register("token_part",
@@ -28,8 +27,7 @@ public class ModItems {
 
     public static final RegistryObject<Item> BINDING_GLUE = ITEMS.register("binding_glue",
             () -> new BindingGlueItem(new Item.Properties()
-                    .stacksTo(1)
-                    .durability(8)));
+                    .stacksTo(1)));
 
     public static void registerItems(IEventBus eventBus) {
         ITEMS.register(eventBus);
